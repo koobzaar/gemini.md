@@ -564,7 +564,8 @@ Source: ${location.href}
     const foreground = isGemini
       ? 'var(--gemini-sys-color-on-surface, #e3e3e3)'
       : '#f8f3eb';
-    const border = isGemini ? 'rgba(255, 255, 255, 0.1)' : 'rgba(248, 243, 235, 0.14)';
+    const border = isGemini ? 'rgba(255, 255, 255, 0.08)' : 'rgba(248, 243, 235, 0.1)';
+    const hover = isGemini ? 'rgba(255, 255, 255, 0.04)' : 'rgba(248, 243, 235, 0.05)';
     const fontFamily = isGemini
       ? '"Google Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
       : 'ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
@@ -572,57 +573,79 @@ Source: ${location.href}
     Object.assign(container.style, {
       position: 'fixed',
       top: '50%',
-      right: '-140px',
+      right: '-142px',
       transform: 'translateY(-50%)',
       zIndex: '2147483647',
       display: 'flex',
       alignItems: 'center',
-      transition: 'right 0.25s ease-in-out',
+      transition: 'right 0.22s ease-in-out',
       fontFamily,
     });
 
     const tab = document.createElement('div');
-    tab.textContent = '◀';
     Object.assign(tab.style, {
       backgroundColor: background,
       color: foreground,
-      padding: '16px 8px',
-      borderTopLeftRadius: '12px',
-      borderBottomLeftRadius: '12px',
+      padding: '15px 8px',
+      borderTopLeftRadius: '14px',
+      borderBottomLeftRadius: '14px',
       cursor: 'pointer',
-      boxShadow: '-2px 0 8px rgba(0,0,0,0.15)',
+      boxShadow: '0 8px 18px rgba(0,0,0,0.12)',
       fontSize: '12px',
+      fontWeight: '600',
+      borderRight: 'none',
+      borderTop: `1px solid ${border}`,
+      borderLeft: `1px solid ${border}`,
+      borderBottom: `1px solid ${border}`,
+      userSelect: 'none',
+    });
+    tab.textContent = '◀';
+
+    const panel = document.createElement('div');
+    Object.assign(panel.style, {
+      minWidth: '142px',
+      backgroundColor: background,
+      borderTop: `1px solid ${border}`,
+      borderRight: `1px solid ${border}`,
+      borderBottom: `1px solid ${border}`,
+      borderTopRightRadius: '14px',
+      borderBottomRightRadius: '14px',
+      boxShadow: '0 8px 18px rgba(0,0,0,0.12)',
+      overflow: 'hidden',
     });
 
     const btn = document.createElement('button');
     btn.id = UI_IDS.button;
     btn.textContent = 'Export .md';
     Object.assign(btn.style, {
-      backgroundColor: background,
+      width: '100%',
+      backgroundColor: 'transparent',
       color: foreground,
       border: 'none',
-      padding: '16px 20px',
+      padding: '15px 18px',
       cursor: 'pointer',
       fontSize: '14px',
       fontWeight: '500',
       fontFamily: 'inherit',
-      borderLeft: `1px solid ${border}`,
-      minWidth: '140px',
       whiteSpace: 'nowrap',
       textAlign: 'center',
+      transition: 'background-color 0.16s ease, opacity 0.16s ease',
     });
 
     container.appendChild(tab);
-    container.appendChild(btn);
+    panel.appendChild(btn);
+    container.appendChild(panel);
 
     container.addEventListener('mouseenter', () => {
       container.style.right = '0px';
       tab.textContent = '▶';
+      btn.style.backgroundColor = hover;
     });
 
     container.addEventListener('mouseleave', () => {
-      container.style.right = '-140px';
+      container.style.right = '-142px';
       tab.textContent = '◀';
+      btn.style.backgroundColor = 'transparent';
     });
 
     btn.addEventListener('click', runExport);

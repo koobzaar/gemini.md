@@ -133,8 +133,8 @@ The DOM walker handles common inline and block elements plus Gemini-specific cod
 | Claude | Best effort | No | No | Native Claude copy buttons |
 | Gemini | Best effort | Yes | Images only | Custom DOM-to-Markdown conversion |
 
-Test target: Chromium-based browsers with Tampermonkey. Firefox may work, but it is not currently validated here.
+Validated on Chromium-based browsers and Firefox with Tampermonkey.
 
 ## License
 
-The userscript metadata declares `MIT`, but this repository does not currently include a standalone `LICENSE` file.
+[MIT](./LICENSE)
