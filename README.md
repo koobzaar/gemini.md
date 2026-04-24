@@ -1,6 +1,6 @@
 <div align="center">
   <h1>ai.md</h1>
-  <p>Export Claude and Gemini conversations to structured Markdown for downstream LLM use.</p>
+  <p>Export ChatGPT, Claude, and Gemini conversations to structured Markdown for downstream LLM use.</p>
 
   <p>
     <a href="#installation">Installation</a> •
@@ -13,24 +13,25 @@
 
   <p>
     <img src="https://img.shields.io/badge/tampermonkey-compatible-blue" alt="Tampermonkey"/>
-    <img src="https://img.shields.io/badge/platforms-Claude%20%7C%20Gemini-orange" alt="Platforms"/>
+    <img src="https://img.shields.io/badge/platforms-ChatGPT%20%7C%20Claude%20%7C%20Gemini-orange" alt="Platforms"/>
     <img src="https://img.shields.io/badge/license-MIT-green" alt="License"/>
-    <img src="https://img.shields.io/badge/version-9.0.0-lightgrey" alt="Version"/>
+    <img src="https://img.shields.io/badge/version-0.3.0-lightgrey" alt="Version"/>
   </p>
 </div>
 
 ---
 
-**ai.md** is a Tampermonkey userscript that exports Claude and Gemini conversations as structured `.md` files. The output is meant to be machine-friendly first: YAML frontmatter plus strict block delimiters so another LLM can parse turns reliably.
+**ai.md** is a Tampermonkey userscript that exports ChatGPT, Claude, and Gemini conversations as structured `.md` files. The output is meant to be machine-friendly first: YAML frontmatter plus strict block delimiters so another LLM can parse turns reliably.
 
 ## Features
 
-- Exports Claude and Gemini conversations after loading available history from the current thread
+- Exports ChatGPT, Claude, and Gemini conversations after loading available history from the current thread
 - Structured output with explicit block delimiters: `::USER_MESSAGE::`, `::MODEL_REASONING::`, `::MODEL_RESPONSE::`, `::END_TURN::`
 - YAML frontmatter with title, platform, export date, source URL, turn count, and best-effort model metadata
 - Captures Gemini reasoning blocks when they are present and expandable
 - Captures metadata for user-uploaded images in Gemini prompts
 - Converts Gemini message DOM to Markdown, including headings, emphasis, inline code, fenced code blocks, tables, lists, links, and KaTeX annotations
+- Converts ChatGPT conversation DOM to Markdown using ChatGPT's message role attributes and turn containers
 - Uses Claude's native per-message copy buttons to preserve Claude's own copied Markdown output
 - Adds a floating export control on both supported sites
 - Saves files as `{conversation_title}_{YYYY-MM-DD_HH-MM-SS}.md`
@@ -41,14 +42,14 @@
 2. Create a new userscript.
 3. Replace the default content with the contents of [ai_md.js](./ai_md.js).
 4. Save the script.
-5. Open `https://gemini.google.com` or `https://claude.ai`.
+5. Open `https://gemini.google.com`, `https://claude.ai`, or `https://chatgpt.com`.
 
 > [!NOTE]
 > The script has no external dependencies and uses `@grant none`.
 
 ## Usage
 
-Open a Claude or Gemini conversation. A floating tab appears on the right edge of the page. Hover over it to reveal the **Export .md** button, then click it.
+Open a ChatGPT, Claude, or Gemini conversation. A floating tab appears on the right edge of the page. Hover over it to reveal the **Export .md** button, then click it.
 
 During export, the script attempts to:
 
@@ -104,6 +105,17 @@ Claude export does not reconstruct Markdown from the DOM. Instead, the script us
 
 This preserves Claude's copied Markdown format better than manual DOM parsing, but it also means Claude export depends on those page controls remaining available.
 
+### ChatGPT
+
+ChatGPT export uses direct DOM traversal rather than native copy buttons:
+
+1. It locates conversation turns using ChatGPT turn containers and message role attributes.
+2. It scrolls upward and waits for older visible turns to load.
+3. It groups messages into user/assistant pairs using `data-message-author-role`.
+4. It converts the extracted message DOM to Markdown with the same exporter used elsewhere in the script.
+
+This first-pass adapter is focused on text fidelity and structure. It is intentionally conservative about attachments and artifacts.
+
 ### Gemini
 
 Gemini export uses direct DOM traversal and Markdown conversion:
@@ -122,6 +134,9 @@ The DOM walker handles common inline and block elements plus Gemini-specific cod
 - Claude attachment metadata is not explicitly exported.
 - Claude artifacts are not explicitly exported.
 - Claude model metadata is currently generic: the export records `Claude` rather than the exact model variant.
+- ChatGPT attachment metadata is best effort only.
+- ChatGPT artifacts and canvas-style outputs are not explicitly exported.
+- ChatGPT model metadata is best effort and depends on the current model switcher label being available in the page.
 - Gemini attachment handling is limited to uploaded image metadata on user prompts.
 - Conversation loading is best effort and depends on the current web UI structure remaining compatible.
 - Gemini Markdown conversion is structured and useful, but it is not guaranteed to match site-native copy output exactly.
@@ -130,6 +145,7 @@ The DOM walker handles common inline and block elements plus Gemini-specific cod
 
 | Platform | History loading | Reasoning capture | Attachment metadata | Markdown source |
 |----------|:-:|:-:|:-:|----------|
+| ChatGPT | Best effort | No | Best effort | Custom DOM-to-Markdown conversion |
 | Claude | Best effort | No | No | Native Claude copy buttons |
 | Gemini | Best effort | Yes | Images only | Custom DOM-to-Markdown conversion |
 
