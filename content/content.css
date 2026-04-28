@@ -1,0 +1,109 @@
+.ai-md-export {
+  --ai-md-bg: #1f1f1f;
+  --ai-md-fg: #ececec;
+  --ai-md-border: rgba(255, 255, 255, 0.1);
+  --ai-md-hover: rgba(255, 255, 255, 0.06);
+  --ai-md-panel-width: 154px;
+
+  position: fixed;
+  top: 50%;
+  right: calc(-1 * var(--ai-md-panel-width));
+  z-index: 2147483647;
+  display: flex;
+  align-items: stretch;
+  transform: translateY(-50%);
+  transition: right 180ms ease-in-out;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.ai-md-export[data-app="gemini"] {
+  --ai-md-bg: var(--gemini-sys-color-surface-container-high, #1e1e1e);
+  --ai-md-fg: var(--gemini-sys-color-on-surface, #e3e3e3);
+  --ai-md-border: rgba(255, 255, 255, 0.08);
+  --ai-md-hover: rgba(255, 255, 255, 0.05);
+  font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.ai-md-export[data-app="claude"] {
+  --ai-md-bg: #2a2623;
+  --ai-md-fg: #f8f3eb;
+  --ai-md-border: rgba(248, 243, 235, 0.12);
+  --ai-md-hover: rgba(248, 243, 235, 0.06);
+}
+
+.ai-md-export:hover,
+.ai-md-export:focus-within {
+  right: 0;
+}
+
+.ai-md-export__tab {
+  display: grid;
+  min-width: 30px;
+  place-items: center;
+  padding: 14px 6px;
+  border: 1px solid var(--ai-md-border);
+  border-right: 0;
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+  background: var(--ai-md-bg);
+  color: var(--ai-md-fg);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  user-select: none;
+}
+
+.ai-md-export__tab::before {
+  content: "<";
+}
+
+.ai-md-export:hover .ai-md-export__tab::before,
+.ai-md-export:focus-within .ai-md-export__tab::before {
+  content: ">";
+}
+
+.ai-md-export__panel {
+  width: var(--ai-md-panel-width);
+  overflow: hidden;
+  border: 1px solid var(--ai-md-border);
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+  background: var(--ai-md-bg);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+}
+
+.ai-md-export__button {
+  width: 100%;
+  min-height: 48px;
+  padding: 14px 16px;
+  border: 0;
+  background: transparent;
+  color: var(--ai-md-fg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  transition: background-color 140ms ease, opacity 140ms ease;
+  white-space: normal;
+}
+
+.ai-md-export:hover .ai-md-export__button,
+.ai-md-export:focus-within .ai-md-export__button {
+  background: var(--ai-md-hover);
+}
+
+.ai-md-export__button:disabled {
+  cursor: default;
+  opacity: 0.62;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-md-export,
+  .ai-md-export__button {
+    transition: none;
+  }
+}

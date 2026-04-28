@@ -1,0 +1,60 @@
+{
+  "manifest_version": 3,
+  "name": "ai.md Transcript Exporter",
+  "short_name": "ai.md",
+  "version": "0.5.0",
+  "description": "Export ChatGPT, Claude, and Gemini conversations to structured Markdown for downstream LLM use.",
+  "homepage_url": "https://github.com/koobzaar/ai.md",
+  "icons": {
+    "48": "icons/ai-md.svg",
+    "96": "icons/ai-md.svg"
+  },
+  "action": {
+    "default_title": "ai.md Transcript Exporter",
+    "default_icon": {
+      "48": "icons/ai-md.svg",
+      "96": "icons/ai-md.svg"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://gemini.google.com/*",
+        "https://claude.ai/*",
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*"
+      ],
+      "js": [
+        "content/content.js"
+      ],
+      "css": [
+        "content/content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "page/exporter.js"
+      ],
+      "matches": [
+        "https://gemini.google.com/*",
+        "https://claude.ai/*",
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*"
+      ]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ai-md-transcript-exporter@example.com",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
+  }
+}

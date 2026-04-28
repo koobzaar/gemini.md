@@ -1,0 +1,11 @@
+.git/
+.github/
+.gitignore
+.codex
+.agents/
+.DS_Store
+dist/
+node_modules/
+*.zip
+*.xpi
+package-lock.json
