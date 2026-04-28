@@ -5,6 +5,7 @@
 .agents/
 .DS_Store
 dist/
+images/
 node_modules/
 *.zip
 *.xpi

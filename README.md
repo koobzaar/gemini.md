@@ -15,7 +15,7 @@
     <a href="https://addons.mozilla.org/pt-BR/firefox/addon/ai-md/"><img src="https://img.shields.io/badge/AMO-ai.md-blue" alt="Firefox Add-ons"/></a>
     <img src="https://img.shields.io/badge/platforms-ChatGPT%20%7C%20Claude%20%7C%20Gemini-blue" alt="Platforms"/>
     <img src="https://img.shields.io/badge/license-MIT-green" alt="License"/>
-    <img src="https://img.shields.io/badge/version-0.5.0-lightgrey" alt="Version"/>
+    <img src="https://img.shields.io/badge/version-0.6.0-lightgrey" alt="Version"/>
   </p>
 </div>
 
@@ -35,6 +35,7 @@
 - Uses direct DOM extraction for ChatGPT.
 - Avoids privileged extension permissions; downloads are triggered with the browser's standard Blob link flow.
 - Declares no data collection in the Firefox manifest with `data_collection_permissions.required: ["none"]`.
+- Includes toolbar settings for enabling/disabling the Markdown header and choosing which metadata fields are exported.
 
 ## Installation
 
@@ -88,8 +89,9 @@ The extension intentionally has no bundler or runtime dependencies.
 manifest.json          Extension manifest.
 content/content.js     Isolated content-script UI and page-script bridge.
 content/content.css    Floating export control styling.
+popup/                 Toolbar settings UI.
 page/exporter.js       Page-context exporter logic.
-icons/ai-md.svg        Extension icon.
+icons/                 Extension icons generated from the source artwork.
 ```
 
 Firefox content scripts run in an isolated JavaScript world. Claude and Gemini export depend on temporarily intercepting native page clipboard writes, so `content/content.js` injects `page/exporter.js` into the page context and communicates with it using `window.postMessage`.

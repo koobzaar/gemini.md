@@ -4,6 +4,18 @@
   const MESSAGE_SOURCE = "ai-md-extension";
   const ROOT_ID = "ai-md-export-root";
   const SCRIPT_ID = "ai-md-page-exporter";
+  const SETTINGS_KEY = "aiMdExportSettings";
+  const DEFAULT_SETTINGS = {
+    includeFrontmatter: true,
+    frontmatterFields: {
+      title: true,
+      platform: true,
+      date: true,
+      model: true,
+      turns: true,
+      source: true,
+    },
+  };
 
   const app = detectApp();
   if (!app || document.getElementById(ROOT_ID)) return;
@@ -61,14 +73,26 @@
       setButtonState("Exporter failed", true);
       console.error("[ai.md] Failed to inject page exporter.");
     });
+    script.addEventListener("load", () => script.remove());
 
     (document.head || document.documentElement).append(script);
-    script.remove();
   }
 
-  function requestExport() {
+  async function requestExport() {
     if (!exporterReady || button.disabled) return;
-    window.postMessage({ source: MESSAGE_SOURCE, type: "AI_MD_EXPORT" }, window.location.origin);
+
+    try {
+      setButtonState("Preparing export...", true);
+      const settings = await loadSettings();
+      window.postMessage({ source: MESSAGE_SOURCE, type: "AI_MD_EXPORT", settings }, window.location.origin);
+    } catch (error) {
+      console.error("[ai.md] Failed to load export settings.", error);
+      window.postMessage({
+        source: MESSAGE_SOURCE,
+        type: "AI_MD_EXPORT",
+        settings: DEFAULT_SETTINGS,
+      }, window.location.origin);
+    }
   }
 
   function handlePageMessage(event) {
@@ -98,5 +122,20 @@
     if (!button) return;
     button.textContent = text;
     button.disabled = disabled;
+  }
+
+  async function loadSettings() {
+    const stored = await browser.storage.local.get(SETTINGS_KEY);
+    return normalizeSettings(stored[SETTINGS_KEY]);
+  }
+
+  function normalizeSettings(settings) {
+    return {
+      includeFrontmatter: settings?.includeFrontmatter ?? DEFAULT_SETTINGS.includeFrontmatter,
+      frontmatterFields: {
+        ...DEFAULT_SETTINGS.frontmatterFields,
+        ...(settings?.frontmatterFields || {}),
+      },
+    };
   }
 })();

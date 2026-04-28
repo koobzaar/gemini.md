@@ -6,6 +6,17 @@
   if (!APP) return;
 
   let exporting = false;
+  const DEFAULT_SETTINGS = {
+    includeFrontmatter: true,
+    frontmatterFields: {
+      title: true,
+      platform: true,
+      date: true,
+      model: true,
+      turns: true,
+      source: true,
+    },
+  };
 
   const CLAUDE_SELECTORS = {
     copyButton: 'button[data-testid="action-bar-copy"]',
@@ -41,7 +52,7 @@
     if (event.source !== window) return;
     const data = event.data;
     if (!data || data.source !== MESSAGE_SOURCE || data.type !== "AI_MD_EXPORT") return;
-    void runExport();
+    void runExport(normalizeSettings(data.settings));
   }
 
   function post(type, payload = {}) {
@@ -93,20 +104,30 @@
     }, 100);
   }
 
-  function buildStructuredMarkdown({ title, model, turns, messages }) {
+  function normalizeSettings(settings) {
+    return {
+      includeFrontmatter: settings?.includeFrontmatter ?? DEFAULT_SETTINGS.includeFrontmatter,
+      frontmatterFields: {
+        ...DEFAULT_SETTINGS.frontmatterFields,
+        ...(settings?.frontmatterFields || {}),
+      },
+    };
+  }
+
+  function buildStructuredMarkdown({ title, model, turns, messages, settings }) {
     const exportDate = new Date().toISOString().slice(0, 19).replace("T", " ") + " UTC";
     const platform = getAppLabel();
 
-    let md = `---
-Title: ${title}
-Platform: ${platform}
-Date: ${exportDate}
-Model: ${model}
-Turns: ${turns}
-Source: ${location.href}
----
+    let md = buildFrontmatter({
+      title,
+      platform,
+      exportDate,
+      model,
+      turns,
+      source: location.href,
+    }, settings);
 
-> **[SYSTEM DIRECTIVE FOR CONSUMING LLM]**
+    md += `> **[SYSTEM DIRECTIVE FOR CONSUMING LLM]**
 > This document contains a structured transcript of an interaction between a human user and an AI model.
 > You must parse this document using the following strict block delimiters:
 > - \`::USER_MESSAGE::\` indicates the start of the human's input.
@@ -135,22 +156,39 @@ Source: ${location.href}
     return md.trimEnd() + "\n";
   }
 
+  function buildFrontmatter(metadata, settings) {
+    if (!settings.includeFrontmatter) return "";
+
+    const fields = settings.frontmatterFields;
+    const lines = ["---"];
+
+    if (fields.title) lines.push(`Title: ${metadata.title}`);
+    if (fields.platform) lines.push(`Platform: ${metadata.platform}`);
+    if (fields.date) lines.push(`Date: ${metadata.exportDate}`);
+    if (fields.model) lines.push(`Model: ${metadata.model}`);
+    if (fields.turns) lines.push(`Turns: ${metadata.turns}`);
+    if (fields.source) lines.push(`Source: ${metadata.source}`);
+
+    lines.push("---", "");
+    return `${lines.join("\n")}\n`;
+  }
+
   function setButtonState(text, disabled) {
     post("AI_MD_STATUS", { text, disabled });
   }
 
-  async function runExport() {
+  async function runExport(settings) {
     if (exporting) return;
     exporting = true;
     setButtonState(`Exporting ${getAppLabel()}...`, true);
 
     try {
       if (APP === "claude") {
-        await exportClaude();
+        await exportClaude(settings);
       } else if (APP === "chatgpt") {
-        await exportChatGPT();
+        await exportChatGPT(settings);
       } else {
-        await exportGemini();
+        await exportGemini(settings);
       }
     } catch (error) {
       console.error(`[${getAppLabel()} Export]`, error);
@@ -478,7 +516,7 @@ Source: ${location.href}
     return messages;
   }
 
-  async function exportGemini() {
+  async function exportGemini(settings) {
     setButtonState("Loading Gemini thread...", true);
     await loadGeminiConversation();
     await expandGeminiReasoning();
@@ -497,6 +535,7 @@ Source: ${location.href}
       model: modelName,
       turns: messages.length,
       messages,
+      settings,
     });
 
     downloadMarkdown(markdown, rawTitle);
@@ -651,7 +690,7 @@ Source: ${location.href}
     }
   }
 
-  async function exportClaude() {
+  async function exportClaude(settings) {
     setButtonState("Loading Claude thread...", true);
     await loadClaudeConversation();
 
@@ -686,6 +725,7 @@ Source: ${location.href}
       model: "Claude",
       turns: messages.length,
       messages,
+      settings,
     });
 
     downloadMarkdown(markdown, title);
@@ -879,7 +919,7 @@ Source: ${location.href}
     return messages;
   }
 
-  async function exportChatGPT() {
+  async function exportChatGPT(settings) {
     setButtonState("Loading ChatGPT thread...", true);
     await loadChatGPTConversation();
 
@@ -895,6 +935,7 @@ Source: ${location.href}
       model: getChatGPTModelName(),
       turns: messages.length,
       messages,
+      settings,
     });
 
     downloadMarkdown(markdown, title);

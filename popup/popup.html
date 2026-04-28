@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ai.md Settings</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="settings">
+      <header class="settings__header">
+        <img src="../icons/icon-48.png" alt="" width="32" height="32">
+        <div>
+          <h1>ai.md</h1>
+          <p>Export settings</p>
+        </div>
+      </header>
+
+      <label class="toggle toggle--primary">
+        <input id="include-frontmatter" type="checkbox">
+        <span>
+          <strong>Include Markdown header</strong>
+          <small>Controls the YAML frontmatter at the top of exports.</small>
+        </span>
+      </label>
+
+      <section class="field-group" aria-labelledby="fields-title">
+        <h2 id="fields-title">Header details</h2>
+
+        <label class="toggle">
+          <input data-field="title" type="checkbox">
+          <span>Title</span>
+        </label>
+        <label class="toggle">
+          <input data-field="platform" type="checkbox">
+          <span>Platform</span>
+        </label>
+        <label class="toggle">
+          <input data-field="date" type="checkbox">
+          <span>Date</span>
+        </label>
+        <label class="toggle">
+          <input data-field="model" type="checkbox">
+          <span>Model</span>
+        </label>
+        <label class="toggle">
+          <input data-field="turns" type="checkbox">
+          <span>Turns</span>
+        </label>
+        <label class="toggle">
+          <input data-field="source" type="checkbox">
+          <span>Source URL</span>
+        </label>
+      </section>
+
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
