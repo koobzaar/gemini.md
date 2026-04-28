@@ -15,7 +15,7 @@
     <a href="https://addons.mozilla.org/pt-BR/firefox/addon/ai-md/"><img src="https://img.shields.io/badge/AMO-ai.md-blue" alt="Firefox Add-ons"/></a>
     <img src="https://img.shields.io/badge/platforms-ChatGPT%20%7C%20Claude%20%7C%20Gemini-blue" alt="Platforms"/>
     <img src="https://img.shields.io/badge/license-MIT-green" alt="License"/>
-    <img src="https://img.shields.io/badge/version-0.6.0-lightgrey" alt="Version"/>
+    <img src="https://img.shields.io/badge/version-1.0.0-lightgrey" alt="Version"/>
   </p>
 </div>
 

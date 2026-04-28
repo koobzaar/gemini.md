@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "ai.md Transcript Exporter",
   "short_name": "ai.md",
-  "version": "0.6.0",
+  "version": "1.0.0",
   "description": "Export ChatGPT, Claude, and Gemini conversations to structured Markdown for downstream LLM use.",
   "homepage_url": "https://github.com/koobzaar/ai.md",
   "icons": {
