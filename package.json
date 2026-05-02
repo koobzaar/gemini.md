@@ -1,0 +1,15 @@
+{
+  "name": "ai-md",
+  "version": "1.0.0",
+  "description": "Firefox extension for exporting ChatGPT, Claude, and Gemini conversations to structured Markdown.",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "lint:amo": "web-ext lint --source-dir . --warnings-as-errors",
+    "build:dist": "web-ext build --source-dir . --artifacts-dir dist --overwrite-dest --ignore-files \".git\" \".git/**\" \".github\" \".github/**\" \".gitignore\" \".codex\" \".codex/**\" \".agents\" \".agents/**\" \".DS_Store\" \"dist\" \"dist/**\" \"images\" \"images/**\" \"node_modules\" \"node_modules/**\" \"package.json\" \"package-lock.json\" \"*.zip\" \"*.xpi\"",
+    "sign:amo": "web-ext sign --source-dir . --artifacts-dir dist --channel listed --ignore-files \".git\" \".git/**\" \".github\" \".github/**\" \".gitignore\" \".codex\" \".codex/**\" \".agents\" \".agents/**\" \".DS_Store\" \"dist\" \"dist/**\" \"images\" \"images/**\" \"node_modules\" \"node_modules/**\" \"package.json\" \"package-lock.json\" \"*.zip\" \"*.xpi\""
+  },
+  "devDependencies": {
+    "web-ext": "^10.1.0"
+  }
+}

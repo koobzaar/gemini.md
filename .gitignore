@@ -1,5 +1,6 @@
 .codex
 .agents/
+node_modules/
 dist/
 *.zip
 *.xpi

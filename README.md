@@ -56,16 +56,26 @@ A floating **Export .md** control appears on supported conversation pages.
 
 ### AMO packaging
 
-This repository is structured as a no-build WebExtension. Package the repository root as the extension source, excluding files listed in `.webextensionignore`.
+This repository is structured as a no-build WebExtension. Package the repository root as the extension source.
 
 If you use Mozilla's `web-ext` tool:
 
 ```bash
-web-ext lint --source-dir .
-web-ext build --source-dir . --artifacts-dir dist --overwrite-dest
+npm run lint:amo
+npm run build:dist
 ```
 
 Submit the generated artifact to Mozilla Add-ons after reviewing the lint output.
+
+### Release automation
+
+GitHub Actions publishes new Firefox Add-ons versions from release tags.
+
+1. Configure repository secrets `AMO_API_KEY` and `AMO_API_SECRET` with Mozilla Add-ons API credentials.
+2. Update `manifest.json` to the next version.
+3. Create and push a matching tag, for example `v1.0.1`.
+
+The release workflow fails if the tag does not match `manifest.json`, runs AMO linting, builds the unsigned zip into `dist/`, uploads it as a GitHub Actions artifact, and submits the listed extension update to Mozilla Add-ons.
 
 ## Usage
 

@@ -9,4 +9,5 @@ images/
 node_modules/
 *.zip
 *.xpi
+package.json
 package-lock.json
